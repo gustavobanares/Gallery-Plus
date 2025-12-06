@@ -11,11 +11,14 @@ import InputCheckbox from './components/input-checkbox'
 import InputSingleFile from './components/input-single-file'
 import { useForm } from 'react-hook-form'
 import ImageFilePreview from './components/image-file-preview'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from './components/dialog'
+import { DialogClose, DialogTrigger } from '@radix-ui/react-dialog'
+import Text from './components/text'
 
 export default function App() {
   const form = useForm()
   const file = form.watch('file')
-  const fileSource = file?.[0] ? URL.createObjectURL(file[0]) : undefined
+  const fileSrc = file?.[0] ? URL.createObjectURL(file[0]) : undefined
 
   return (
     <div className="grid gap-7 p-6">
@@ -60,7 +63,7 @@ export default function App() {
       </div>
 
       <div>
-        <InputText icon={SearchIcon} placeholder="Buscar foto" />
+        <InputText placeholder="Buscar foto" icon={SearchIcon} />
       </div>
 
       <div>
@@ -72,9 +75,37 @@ export default function App() {
           allowedExtensions={['png', 'jpg', 'jpeg', 'webp']}
           maxFileSizeInMB={50}
           form={form}
+          replaceBy={<ImageFilePreview src={fileSrc} alt="Imagem" />}
           {...form.register('file')}
-          replaceBy={<ImageFilePreview src={fileSource} alt="Imagem" />}
         />
+      </div>
+
+      <div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Abrir Modal</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>Teste dialog</DialogHeader>
+            <DialogBody>
+              <Text as="div">Teste conteúdo do dialog</Text>
+
+              <InputSingleFile
+                allowedExtensions={['png', 'jpg', 'jpeg', 'webp']}
+                maxFileSizeInMB={50}
+                form={form}
+                replaceBy={<ImageFilePreview src={fileSrc} alt="Imagem" />}
+                {...form.register('file')}
+              />
+            </DialogBody>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="secondary">Cancelar</Button>
+              </DialogClose>
+              <Button>Adicionar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
